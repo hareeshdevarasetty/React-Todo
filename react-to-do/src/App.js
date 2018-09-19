@@ -6,22 +6,59 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      toDos: [
+      todos: [
       {description: 'Walk the cat', isCompleted: true},
       {description: 'Throw the dishes away', isCompleted: true},
       {description: 'Buy new dishes' , isCompleted:false},
-    ]
+    ],
+    newTodoDescription: ''
   };
+
   }
+
+  deleteTodo(index){
+    const todoDelete = this.state.todo[index];
+    const filteredList = this.state.todos.filter (todo => todo!== todoDelete)
+    this.setState({todos: filteredList})
+  }
+
+
+  deleteTodo(index) {
+    const lisDelete = this.state.todos[index];
+    const filteredItem = this.state.todos.filter (todo => todo !== lisDelete)
+    this.setState({todos:filteredItem})
+   }
+
+  handleChange(e) {
+    this.setState({ newTodoDescription: e.target.value })
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    if (!this.state.newTodoDescription) { return }
+    const newTodo = { description: this.state.newTodoDescription, isCompleted: false };
+    this.setState({ todos: [...this.state.todos, newTodo], newTodoDescription: '' });
+  }
+
+  toggleComplete(index) {
+    const todos = this.state.todos.slice();
+    const todo = todos[index];
+    todo.isCompleted = todo.isCompleted ? false : true;
+    this.setState({ todos: todos });
+  }
+
   render() {
     return (
       <div className="App">
        <ul>
-      {this.state.toDos.map((toDo,index) =>
-    <ToDo key={ index } description={ toDo.description } isCompleted={ toDo.isCompleted } />
-
+      {this.state.todos.map((todo,index) =>
+      <ToDo key={ index } description={ todo.description } isCompleted={ todo.isCompleted } toggleComplete={ () => this.toggleComplete(index)} deleteTodo = { () => this.deleteTodo(index) } />
       )}
-       </ul>       
+       </ul>  
+       <form onSubmit={ (e) => this.handleSubmit(e) }>
+       <input type="text" value={ this.state.newTodoDescription } onChange={ (e) => this.handleChange(e) } />
+           <input type="submit" />
+         </form>     
       </div>
     );
   }
